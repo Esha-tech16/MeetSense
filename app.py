@@ -8,6 +8,10 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
+from itsdangerous import URLSafeTimedSerializer, BadSignature, SignatureExpired
+from urllib.parse import urljoin
+import smtplib
+from email.message import EmailMessage
 
 BASE_DIR = Path(__file__).resolve().parent
 load_dotenv(BASE_DIR / ".env", override=True)
@@ -263,6 +267,131 @@ def login():
         flash("Email or password is incorrect.", "error")
     return render_template("auth.html", mode="login")
 
+
+@app.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    if request.method == "POST":
+        email = request.form.get("email", "").strip().lower()
+        user = User.query.filter_by(email=email).first()
+        # Keep the response identical whether or not the account exists.
+        if user:
+            serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+            token = serializer.dumps(user.email, salt="meetsense-password-reset")
+            reset_url = url_for("reset_password", token=token, _external=True)
+            smtp_host = os.getenv("SMTP_HOST", "").strip()
+            smtp_port = int(os.getenv("SMTP_PORT", "587"))
+            smtp_user = os.getenv("SMTP_USER", "").strip()
+            smtp_password = os.getenv("SMTP_PASSWORD", "")
+            mail_from = os.getenv("MAIL_FROM", smtp_user).strip()
+            if smtp_host and mail_from:
+                try:
+                    message = EmailMessage()
+                    message["Subject"] = "Reset your MeetSense password"
+                    message["From"] = mail_from
+                    message["To"] = user.email
+                    message.set_content(
+                        f"Hello {user.name},\n\nUse this link to reset your MeetSense password "
+                        f"(valid for 30 minutes):\n{reset_url}\n\nIf you did not request this, ignore this email."
+                    )
+                    with smtplib.SMTP(smtp_host, smtp_port, timeout=15) as server:
+                        server.starttls()
+                        if smtp_user:
+                            server.login(smtp_user, smtp_password)
+                        server.send_message(message)
+                except Exception:
+                    app.logger.exception("Could not send password reset email")
+            else:
+                # Convenient for a local/student deployment without an email provider.
+                app.logger.warning("Password reset link for %s: %s", user.email, reset_url)
+                print(f"\n[MeetSense] Password reset link (local development): {reset_url}\n")
+        flash("If an account exists for that email, password reset instructions have been sent. Check the app terminal if SMTP is not configured.", "success")
+        return redirect(url_for("login"))
+    return render_template("auth.html", mode="forgot")
+
+@app.route("/reset-password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    serializer = URLSafeTimedSerializer(app.config["SECRET_KEY"])
+    try:
+        email = serializer.loads(token, salt="meetsense-password-reset", max_age=1800)
+    except SignatureExpired:
+        flash("That reset link has expired. Please request a new one.", "error")
+        return redirect(url_for("forgot_password"))
+    except BadSignature:
+        flash("That reset link is invalid. Please request a new one.", "error")
+        return redirect(url_for("forgot_password"))
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        flash("That account could not be found.", "error")
+        return redirect(url_for("forgot_password"))
+    if request.method == "POST":
+        password = request.form.get("password", "")
+        confirm = request.form.get("confirm_password", "")
+        if len(password) < 8:
+            flash("Use a password with at least 8 characters.", "error")
+        elif password != confirm:
+            flash("The passwords do not match.", "error")
+        else:
+            user.password_hash = generate_password_hash(password)
+            db.session.commit()
+            flash("Your password has been reset. You can now log in.", "success")
+            return redirect(url_for("login"))
+    return render_template("auth.html", mode="reset")
+
+@app.route("/account", methods=["GET"])
+@login_required
+def account_page():
+    return render_template("account.html")
+
+@app.route("/account/delete", methods=["POST"])
+@login_required
+def delete_account():
+    if request.form.get("confirmation", "").strip().lower() != "delete":
+        flash('Type "delete" to confirm account deletion.', "error")
+        return redirect(url_for("account_page"))
+    user = db.session.get(User, current_user.id)
+    for task in Task.query.filter_by(assigned_to_id=user.id).all():
+        task.assigned_to_id = None
+    # Reassign creator references in teams the user belongs to but does not own.
+    for meeting in Meeting.query.filter_by(created_by_id=user.id).all():
+        team = db.session.get(Team, meeting.team_id)
+        replacement = next((member for member in team.members if member.id != user.id), None) if team else None
+        if replacement:
+            meeting.created_by_id = replacement.id
+        elif team and team.created_by_id != user.id:
+            meeting.created_by_id = team.created_by_id
+    for task in Task.query.filter_by(created_by_id=user.id).all():
+        team = db.session.get(Team, task.team_id)
+        replacement = next((member for member in team.members if member.id != user.id), None) if team else None
+        if replacement:
+            task.created_by_id = replacement.id
+        elif team and team.created_by_id != user.id:
+            task.created_by_id = team.created_by_id
+    owned_teams = Team.query.filter_by(created_by_id=user.id).all()
+    for team in owned_teams:
+        other_members = [member for member in team.members if member.id != user.id]
+        if other_members:
+            successor = other_members[0]
+            team.created_by_id = successor.id
+            for meeting in team.meetings:
+                if meeting.created_by_id == user.id:
+                    meeting.created_by_id = successor.id
+            for task in team.tasks:
+                if task.created_by_id == user.id:
+                    task.created_by_id = successor.id
+        else:
+            # Remove uploaded recordings along with the team's data.
+            for meeting in list(team.meetings):
+                if meeting.audio_path:
+                    try: Path(meeting.audio_path).unlink(missing_ok=True)
+                    except OSError: app.logger.warning("Could not remove meeting audio: %s", meeting.audio_path)
+            db.session.delete(team)
+    user.teams.clear()
+    db.session.delete(user)
+    db.session.commit()
+    logout_user()
+    flash("Your MeetSense account has been deleted.", "success")
+    return redirect(url_for("index"))
+
 @app.route("/logout", methods=["POST"])
 @login_required
 def logout():
@@ -352,6 +481,26 @@ def meeting_detail(meeting_id):
     except Exception:
         decisions = []
     return render_template("meeting_detail.html", meeting=meeting, decisions=decisions, members=team_members_list)
+
+
+@app.route("/meetings/<int:meeting_id>/delete", methods=["POST"])
+@login_required
+def delete_meeting(meeting_id):
+    meeting = db.session.get(Meeting, meeting_id)
+    if not meeting or not can_access_team(meeting.team_id):
+        from flask import abort
+        abort(404)
+    audio_path = meeting.audio_path
+    title = meeting.title
+    db.session.delete(meeting)
+    db.session.commit()
+    if audio_path:
+        try:
+            Path(audio_path).unlink(missing_ok=True)
+        except OSError:
+            app.logger.warning("Could not remove deleted meeting audio: %s", audio_path)
+    flash(f'"{title}" was deleted.', "success")
+    return redirect(url_for("meetings_page"))
 
 @app.route("/meetings/<int:meeting_id>/process", methods=["POST"])
 @login_required

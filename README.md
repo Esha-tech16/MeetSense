@@ -196,3 +196,32 @@ Install `requirements-ai.txt` for transcription and the Groq client, set `GROQ_A
 - Keep `.env` private. Do not publish your PostgreSQL password or secret key.
 - This app is intended for local academic demonstration, not public internet deployment.
 - `db.create_all()` creates missing `ms_` tables; it is not a migration system and does not alter existing table definitions.
+
+
+## Run MeetSense on Windows
+
+From the project folder, open Command Prompt or PowerShell and run:
+
+```powershell
+.venv\Scripts\activate
+python app.py
+```
+
+If the virtual environment has not been created yet, create it and install the packages once:
+
+```powershell
+python -m venv .venv
+.venv\Scripts\activate
+pip install -r requirements.txt
+pip install -r requirements-ai.txt
+```
+
+### Password reset email (optional)
+
+Forgot-password reset links are sent by email when SMTP settings are configured in `.env`:
+`SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASSWORD`, and `MAIL_FROM`.
+For a local setup without SMTP, MeetSense prints the one-time reset link in the terminal.
+Reset links expire after 30 minutes.
+
+
+Note: the distributed ZIP includes an empty `uploads` folder. Previously uploaded local audio recordings are not included; upload recordings again from the MeetSense interface after extracting the project.

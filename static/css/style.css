@@ -412,3 +412,1062 @@ button:disabled { opacity: .55; cursor: not-allowed; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
 }
+
+/* Spacia-inspired visual refresh: warm ivory, ink and acid-lime accents */
+:root {
+  --bg: #f5f4ee;
+  --paper: #fffefa;
+  --paper-strong: #ffffff;
+  --ink: #171914;
+  --muted: #66685e;
+  --muted-light: #929386;
+  --line: #e7e7dc;
+  --line-strong: #d8dacb;
+  --maroon: #191b15;
+  --maroon-dark: #090a08;
+  --maroon-soft: #f0f1d8;
+  --orange: #e5ed57;
+  --orange-dark: #d4df35;
+  --soft-orange: #f4f5d9;
+  --green: #66702a;
+  --soft-green: #eff1d9;
+  --purple: #77786e;
+  --soft-purple: #efefe9;
+  --shadow: 0 12px 32px rgba(30, 31, 20, .055);
+  --shadow-hover: 0 16px 38px rgba(30, 31, 20, .1);
+  --radius: 22px;
+  --radius-sm: 13px;
+}
+body { background: var(--bg); color: var(--ink); }
+.sidebar { background: #fbfaf5; border-right-color: var(--line); }
+.brand-mark { background: var(--orange); color: #151710; border-radius: 50%; }
+.nav a:hover, .nav a.active { background: var(--maroon-soft); color: var(--ink); }
+.team-dot, .team-avatar { background: #eff0d2; color: #282a1c; }
+.help-card { background: #f0f1d8; border-color: #e3e5bd; }
+.avatar { background: #e7e9c6; color: #26291a; }
+.topbar { background: rgba(245,244,238,.94); border-bottom-color: var(--line); }
+.heading-period { color: #c6ce2b; }
+.button-orange { background: var(--orange); color: #171914; box-shadow: none; }
+.button-orange:hover { background: var(--orange-dark); box-shadow: none; }
+.button-quiet { background: #f0f0e8; color: var(--ink); }
+.stat-card, .panel { border-radius: 22px; box-shadow: var(--shadow); }
+.stat-card:hover, .feature-card:hover { box-shadow: var(--shadow-hover); }
+.flash-stack.toast-stack, .public-flashes {
+  position: fixed; z-index: 1000; top: 88px; right: 26px; width: min(390px, calc(100vw - 32px));
+  display: grid; gap: 10px; pointer-events: none;
+}
+.flash-stack .flash, .public-flashes .flash {
+  pointer-events: auto; margin: 0; padding: 16px 44px 16px 18px; border-radius: 16px;
+  background: #191b15; color: #fffefa; border: 1px solid rgba(255,255,255,.12);
+  box-shadow: 0 18px 48px rgba(0,0,0,.2); animation: toast-in .32s cubic-bezier(.2,.8,.2,1) both;
+}
+.flash-stack .flash.success, .public-flashes .flash.success { border-left: 5px solid #e5ed57; }
+.flash-stack .flash.error, .public-flashes .flash.error { border-left: 5px solid #ef9a8c; }
+.flash-close { color: #fffefa; }
+@keyframes toast-in { from { opacity: 0; transform: translate(24px,-8px) scale(.97); } to { opacity: 1; transform: translate(0,0) scale(1); } }
+.button-danger { background: #a83228; color: white; border: 0; }
+.button-danger:hover { background: #85251e; }
+.danger-panel { border-color: #e9c9c3; }
+.account-details { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 18px; }
+.account-details div { display: grid; gap: 5px; padding: 15px; background: #f6f6ef; border-radius: 13px; }
+.account-details span { color: var(--muted); font-size: .82rem; }
+.delete-account-form { display: flex; align-items: end; gap: 14px; flex-wrap: wrap; margin-top: 18px; }
+.delete-account-form label { display: grid; gap: 7px; min-width: 220px; }
+@media (max-width: 620px) {
+  .account-details { grid-template-columns: 1fr; }
+  .flash-stack.toast-stack, .public-flashes { top: 74px; right: 12px; }
+}
+
+
+/* Final palette refinements: replace legacy orange card accents with charcoal/soft-ivory. */
+.stat-icon.orange,
+.meeting-type-icon,
+.empty-icon,
+.tip-spark,
+.feature-icon.orange,
+.audio-icon,
+.task-icon {
+  background: #efefe9;
+  color: #191b15;
+}
+.bottom-tip {
+  background: #efefe9;
+  border-color: #e2e2d7;
+}
+.bottom-tip .tip-spark {
+  background: #e5ed57;
+  color: #191b15;
+}
+.ai-label {
+  color: #191b15;
+  background: #f0f1d8;
+}
+.subtle-link span,
+.summary-spark,
+.task-due {
+  color: #66702a;
+}
+.form-stack input:focus,
+.form-stack textarea:focus,
+.form-stack select:focus,
+.inline-add input:focus,
+.task-row select:focus {
+  border-color: #66702a;
+  box-shadow: 0 0 0 3px rgba(102,112,42,.14);
+}
+.upload-zone:hover { border-color: #66702a; }
+.upload-symbol {
+  background: #f0f1d8;
+  color: #191b15;
+}
+.notice {
+  background: #efefe9;
+  color: #191b15;
+}
+.notice strong { color: #191b15; }
+.button-danger {
+  background: #191b15;
+  color: #fffefa;
+  border: 0;
+}
+.button-danger:hover { background: #090a08; }
+.danger-panel { border-color: #e2e2d7; }
+
+/* All destructive-action confirmations use this centred, Spacia-palette modal. */
+body.modal-open { overflow: hidden; }
+.confirm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  background: rgba(9,10,8,.58);
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity .2s ease, visibility .2s ease;
+}
+.confirm-modal-backdrop.is-visible {
+  opacity: 1;
+  visibility: visible;
+}
+.confirm-modal {
+  width: min(520px, 100%);
+  padding: 28px;
+  border-radius: 22px;
+  background: #e5ed57;
+  color: #191b15;
+  border: 1px solid #d4df35;
+  box-shadow: 0 24px 70px rgba(0,0,0,.28);
+  transform: translateY(12px) scale(.98);
+  transition: transform .22s cubic-bezier(.2,.8,.2,1);
+}
+.confirm-modal-backdrop.is-visible .confirm-modal {
+  transform: translateY(0) scale(1);
+}
+.confirm-modal-heading {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.confirm-modal-icon {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: #191b15;
+  color: #e5ed57;
+  font-weight: 800;
+  font-size: 1.35rem;
+}
+.confirm-modal h2 {
+  margin: 0;
+  color: #191b15;
+  font-family: Manrope, sans-serif;
+  font-size: 1.3rem;
+  line-height: 1.3;
+}
+.confirm-modal p {
+  margin: 24px 0 26px;
+  color: #292b22;
+  font-size: .96rem;
+  line-height: 1.7;
+}
+.confirm-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid rgba(25,27,21,.18);
+}
+.confirm-modal-actions .button-quiet {
+  background: #fffefa;
+  color: #191b15;
+  border-color: transparent;
+}
+.confirm-modal-actions .button-modal-danger {
+  background: #191b15;
+  color: #fffefa;
+  border: 1px solid #191b15;
+}
+.confirm-modal-actions .button-modal-danger:hover {
+  background: #090a08;
+}
+@media (max-width: 520px) {
+  .confirm-modal { padding: 22px; border-radius: 18px; }
+  .confirm-modal h2 { font-size: 1.12rem; }
+  .confirm-modal-actions { flex-direction: column-reverse; }
+  .confirm-modal-actions .button { width: 100%; }
+}
+
+
+/* Revision: light-green replaces remaining red/pink status and placeholder accents. */
+:root {
+  --danger-soft: #e6f0e8;
+  --danger-line: #cde1d2;
+  --danger-ink: #2f694f;
+}
+.status-badge.failed {
+  background: #e6f0e8;
+  color: #2f694f;
+}
+.flash.error,
+.flash-stack .flash.error,
+.public-flashes .flash.error {
+  background: #e6f0e8;
+  color: #2f694f;
+  border: 1px solid #cde1d2;
+  border-left: 5px solid #39745d;
+}
+.danger-panel {
+  border-color: #cde1d2;
+}
+.placeholder-box {
+  background: #f1f7f1;
+  border: 1px dashed #b8d5bf;
+}
+.upload-zone {
+  background: #f1f7f1;
+  border-color: #b8d5bf;
+}
+.upload-zone:hover {
+  background: #e6f0e8;
+  border-color: #39745d;
+}
+.notice {
+  background: #e6f0e8;
+  color: #2f694f;
+}
+.notice strong { color: #2f694f; }
+
+/* Toast/flash notifications are centred on the viewport, not tucked in a corner. */
+.flash-stack.toast-stack,
+.public-flashes {
+  position: fixed;
+  inset: 0;
+  z-index: 3000;
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding: 22px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: rgba(9,10,8,.38);
+  backdrop-filter: blur(3px);
+  pointer-events: none;
+}
+.flash-stack.toast-stack .flash,
+.public-flashes .flash {
+  width: min(460px, calc(100vw - 36px));
+  padding: 18px 48px 18px 20px;
+  border-radius: 18px;
+  background: #e6f0e8;
+  color: #191b15;
+  border: 1px solid #cde1d2;
+  border-left: 6px solid #39745d;
+  box-shadow: 0 22px 60px rgba(0,0,0,.2);
+  animation: toast-center-in .28s cubic-bezier(.2,.8,.2,1) both;
+}
+.flash-stack.toast-stack .flash.error,
+.public-flashes .flash.error {
+  background: #e6f0e8;
+  color: #191b15;
+  border-color: #cde1d2;
+  border-left-color: #39745d;
+}
+.flash-stack.toast-stack .flash-close,
+.public-flashes .flash-close {
+  color: #39745d;
+}
+@keyframes toast-center-in {
+  from { opacity: 0; transform: translateY(12px) scale(.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* Keep the destructive-action dialog precisely centred in the visible browser viewport. */
+.confirm-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 20px;
+  overflow-y: auto;
+}
+.confirm-modal {
+  position: relative;
+  inset: auto;
+  margin: auto;
+  flex: 0 1 520px;
+  background: #e5ed57;
+  color: #191b15;
+}
+.confirm-modal-backdrop.is-visible .confirm-modal {
+  transform: translateY(0) scale(1);
+}
+@media (max-width: 620px) {
+  .flash-stack.toast-stack,
+  .public-flashes {
+    padding: 16px;
+  }
+}
+
+
+/* Exact compact popup treatment matched to the user's reference screenshot. */
+.confirm-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  padding: 16px !important;
+  overflow: auto;
+  background: rgba(9, 10, 8, .58) !important;
+  backdrop-filter: none !important;
+  z-index: 99999 !important;
+}
+.confirm-modal {
+  box-sizing: border-box;
+  position: relative !important;
+  inset: auto !important;
+  width: 330px !important;
+  max-width: calc(100vw - 32px) !important;
+  min-width: 0 !important;
+  flex: 0 1 330px !important;
+  margin: auto !important;
+  padding: 16px 18px 15px !important;
+  border-radius: 14px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  box-shadow: 3px 5px 0 rgba(0, 0, 0, .95) !important;
+  transform: translateY(10px) scale(.98);
+  transition: transform .2s ease;
+}
+.confirm-modal-backdrop.is-visible .confirm-modal {
+  transform: translateY(0) scale(1);
+}
+.confirm-modal-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 9px !important;
+}
+.confirm-modal-icon {
+  width: 24px !important;
+  height: 24px !important;
+  flex: 0 0 24px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #191b15 !important;
+  color: #e5ed57 !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+.confirm-modal h2 {
+  margin: 0 !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.25 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.2px !important;
+}
+.confirm-modal p {
+  margin: 17px 0 16px !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 9px !important;
+  line-height: 1.65 !important;
+  font-weight: 500 !important;
+}
+.confirm-modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 6px !important;
+  padding-top: 14px !important;
+  border-top: 1px solid rgba(25, 27, 21, .12) !important;
+}
+.confirm-modal-actions .button {
+  min-height: 26px !important;
+  height: 26px !important;
+  padding: 0 13px !important;
+  border-radius: 7px !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 9px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+}
+.confirm-modal-actions .button-quiet {
+  min-width: 64px !important;
+  background: #fffefa !important;
+  color: #191b15 !important;
+  border: 1px solid #fffefa !important;
+}
+.confirm-modal-actions .button-modal-danger {
+  min-width: 56px !important;
+  background: #191b15 !important;
+  color: #fffefa !important;
+  border: 1px solid #191b15 !important;
+}
+.confirm-modal-actions .button-modal-danger:hover {
+  background: #090a08 !important;
+}
+
+/* Success/error message popups share the same lime card, compact typography and
+   centred placement as the confirmation dialog shown in the reference. */
+.flash-stack.toast-stack,
+.public-flashes {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 90000 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 16px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  background: rgba(9, 10, 8, .48) !important;
+  pointer-events: none !important;
+}
+.flash-stack.toast-stack .flash,
+.public-flashes .flash {
+  box-sizing: border-box;
+  width: min(330px, calc(100vw - 32px)) !important;
+  margin: 0 !important;
+  padding: 16px 34px 15px 18px !important;
+  border-radius: 14px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  border-left: 1px solid #d4df35 !important;
+  box-shadow: 3px 5px 0 rgba(0, 0, 0, .95) !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 9px !important;
+  line-height: 1.65 !important;
+  font-weight: 600 !important;
+  animation: toast-center-in .2s ease both !important;
+  pointer-events: auto !important;
+}
+.flash-stack.toast-stack .flash.success,
+.flash-stack.toast-stack .flash.error,
+.public-flashes .flash.success,
+.public-flashes .flash.error {
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border-color: #d4df35 !important;
+  border-left-color: #d4df35 !important;
+}
+.flash-stack.toast-stack .flash-close,
+.public-flashes .flash-close {
+  color: #191b15 !important;
+  font-size: 16px !important;
+}
+@media (max-width: 520px) {
+  .confirm-modal { padding: 15px 16px 14px !important; }
+  .confirm-modal h2 { font-size: 14px !important; }
+}
+
+
+/* Final modal sizing and lifecycle: large, readable, centred, never leaves a page overlay behind. */
+body.modal-open {
+  overflow: hidden !important;
+}
+.confirm-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  display: grid !important;
+  place-items: center !important;
+  padding: 24px !important;
+  overflow: auto !important;
+  background: rgba(9, 10, 8, .46) !important;
+  backdrop-filter: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  z-index: 99999 !important;
+  transition: opacity .2s ease, visibility .2s ease !important;
+}
+.confirm-modal-backdrop.is-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+.confirm-modal {
+  box-sizing: border-box !important;
+  position: relative !important;
+  inset: auto !important;
+  width: min(640px, calc(100vw - 40px)) !important;
+  max-width: 640px !important;
+  min-width: 0 !important;
+  min-height: 280px !important;
+  margin: 0 !important;
+  padding: 34px 36px 30px !important;
+  border-radius: 20px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  box-shadow: 5px 7px 0 rgba(0, 0, 0, .95) !important;
+  transform: translateY(12px) scale(.985);
+  transition: transform .2s ease !important;
+}
+.confirm-modal-backdrop.is-visible .confirm-modal {
+  transform: translateY(0) scale(1) !important;
+}
+.confirm-modal-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+.confirm-modal-icon {
+  width: 40px !important;
+  height: 40px !important;
+  flex: 0 0 40px !important;
+  display: grid !important;
+  place-items: center !important;
+  border-radius: 50% !important;
+  background: #191b15 !important;
+  color: #e5ed57 !important;
+  font-size: 23px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+}
+.confirm-modal h2 {
+  margin: 0 !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 24px !important;
+  line-height: 1.3 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.35px !important;
+}
+.confirm-modal p {
+  margin: 30px 0 28px !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 16px !important;
+  line-height: 1.7 !important;
+  font-weight: 500 !important;
+}
+.confirm-modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding-top: 22px !important;
+  border-top: 1px solid rgba(25, 27, 21, .16) !important;
+}
+.confirm-modal-actions .button {
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 10px !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 14px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+}
+.confirm-modal-actions .button-quiet {
+  min-width: 100px !important;
+  background: #fffefa !important;
+  color: #191b15 !important;
+  border: 1px solid #fffefa !important;
+}
+.confirm-modal-actions .button-modal-danger {
+  min-width: 100px !important;
+  background: #191b15 !important;
+  color: #fffefa !important;
+  border: 1px solid #191b15 !important;
+}
+.confirm-modal-actions .button-modal-danger:hover {
+  background: #090a08 !important;
+}
+
+/* Notification cards stay centred, but never dim/blur or block the page.
+   Their wrapper is removed by app.js when the final card is dismissed. */
+.flash-stack.toast-stack,
+.public-flashes {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 90000 !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 18px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  background: transparent !important;
+  backdrop-filter: none !important;
+  pointer-events: none !important;
+}
+.flash-stack.toast-stack .flash,
+.public-flashes .flash {
+  box-sizing: border-box !important;
+  width: min(460px, calc(100vw - 36px)) !important;
+  margin: 0 !important;
+  padding: 20px 48px 20px 24px !important;
+  border-radius: 18px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  border-left: 1px solid #d4df35 !important;
+  box-shadow: 4px 6px 0 rgba(0,0,0,.92) !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1.55 !important;
+  font-weight: 600 !important;
+  pointer-events: auto !important;
+  animation: toast-center-in .22s ease both !important;
+}
+.flash-stack.toast-stack .flash.success,
+.flash-stack.toast-stack .flash.error,
+.public-flashes .flash.success,
+.public-flashes .flash.error {
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border-color: #d4df35 !important;
+}
+.flash-stack.toast-stack .flash-close,
+.public-flashes .flash-close {
+  color: #191b15 !important;
+  font-size: 20px !important;
+}
+@media (max-width: 640px) {
+  .confirm-modal {
+    width: calc(100vw - 32px) !important;
+    min-height: 0 !important;
+    padding: 24px 22px 22px !important;
+    border-radius: 17px !important;
+  }
+  .confirm-modal h2 { font-size: 20px !important; }
+  .confirm-modal p {
+    margin: 22px 0 !important;
+    font-size: 15px !important;
+  }
+  .confirm-modal-actions .button {
+    min-height: 42px !important;
+    height: 42px !important;
+    padding: 0 16px !important;
+  }
+}
+
+
+/* Make every message-only popup use the same full-size card as the confirmation dialog. */
+.flash-stack.toast-stack,
+.public-flashes {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 90000 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  background: rgba(9, 10, 8, .46) !important;
+  backdrop-filter: none !important;
+  pointer-events: auto !important;
+}
+.flash-stack.toast-stack .flash,
+.public-flashes .flash {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: flex !important;
+  align-items: center !important;
+  width: min(640px, calc(100vw - 40px)) !important;
+  max-width: 640px !important;
+  min-height: 280px !important;
+  margin: 0 !important;
+  padding: 34px 58px 30px 36px !important;
+  border-radius: 20px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  border-left: 1px solid #d4df35 !important;
+  box-shadow: 5px 7px 0 rgba(0, 0, 0, .95) !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 16px !important;
+  font-weight: 500 !important;
+  line-height: 1.7 !important;
+  text-align: left !important;
+  pointer-events: auto !important;
+  animation: toast-center-in .22s ease both !important;
+}
+.flash-stack.toast-stack .flash.success,
+.flash-stack.toast-stack .flash.error,
+.public-flashes .flash.success,
+.public-flashes .flash.error {
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border-color: #d4df35 !important;
+  border-left-color: #d4df35 !important;
+}
+.flash-stack.toast-stack .flash-close,
+.public-flashes .flash-close {
+  position: absolute !important;
+  top: 20px !important;
+  right: 22px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #191b15 !important;
+  color: #e5ed57 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+@media (max-width: 640px) {
+  .flash-stack.toast-stack .flash,
+  .public-flashes .flash {
+    width: calc(100vw - 32px) !important;
+    min-height: 250px !important;
+    padding: 28px 48px 26px 26px !important;
+    border-radius: 17px !important;
+    font-size: 15px !important;
+  }
+}
+
+
+/* ==========================================================
+   Unified MeetSense popup system
+   Every popup uses the same large centred lime card.
+   ========================================================== */
+body.modal-open {
+  overflow: hidden !important;
+}
+
+/* Confirmation modal */
+.confirm-modal-backdrop,
+.processing-modal-backdrop {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 99999 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  padding: 24px !important;
+  overflow-y: auto !important;
+  background: rgba(9, 10, 8, .48) !important;
+  backdrop-filter: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: opacity .2s ease, visibility .2s ease !important;
+}
+.confirm-modal-backdrop.is-visible,
+.processing-modal-backdrop.is-visible {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+}
+.confirm-modal,
+.processing-modal {
+  box-sizing: border-box !important;
+  position: relative !important;
+  width: min(640px, calc(100vw - 40px)) !important;
+  max-width: 640px !important;
+  min-height: 280px !important;
+  margin: auto !important;
+  padding: 34px 36px 30px !important;
+  border-radius: 20px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  box-shadow: 5px 7px 0 rgba(0, 0, 0, .95) !important;
+  transform: translateY(12px) scale(.985);
+  transition: transform .2s ease !important;
+}
+.confirm-modal-backdrop.is-visible .confirm-modal,
+.processing-modal-backdrop.is-visible .processing-modal {
+  transform: translateY(0) scale(1) !important;
+}
+.confirm-modal-heading,
+.processing-modal-heading {
+  display: flex !important;
+  align-items: center !important;
+  gap: 15px !important;
+}
+.confirm-modal-icon,
+.processing-modal-emoji {
+  display: grid !important;
+  place-items: center !important;
+  flex: 0 0 42px !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background: #191b15 !important;
+  color: #e5ed57 !important;
+  font-size: 23px !important;
+  line-height: 1 !important;
+}
+.confirm-modal h2,
+.processing-modal h2 {
+  margin: 0 !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: clamp(22px, 2vw, 26px) !important;
+  line-height: 1.3 !important;
+  font-weight: 800 !important;
+  letter-spacing: -.35px !important;
+}
+.confirm-modal p,
+.processing-modal p {
+  margin: 30px 0 28px !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: clamp(16px, 1.35vw, 18px) !important;
+  line-height: 1.7 !important;
+  font-weight: 500 !important;
+}
+.confirm-modal-actions {
+  display: flex !important;
+  justify-content: flex-end !important;
+  align-items: center !important;
+  gap: 12px !important;
+  padding-top: 22px !important;
+  border-top: 1px solid rgba(25, 27, 21, .16) !important;
+}
+.confirm-modal-actions .button {
+  min-height: 44px !important;
+  height: 44px !important;
+  padding: 0 22px !important;
+  border-radius: 10px !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: 15px !important;
+  line-height: 1 !important;
+  font-weight: 800 !important;
+  box-shadow: none !important;
+}
+.confirm-modal-actions .button-quiet {
+  min-width: 100px !important;
+  background: #fffefa !important;
+  color: #191b15 !important;
+  border: 1px solid #fffefa !important;
+}
+.confirm-modal-actions .button-modal-danger {
+  min-width: 112px !important;
+  background: #191b15 !important;
+  color: #fffefa !important;
+  border: 1px solid #191b15 !important;
+}
+.confirm-modal-actions .button-modal-danger:hover {
+  background: #090a08 !important;
+}
+
+/* Processing card uses exactly the same size, colour, typography and shadow. */
+.processing-modal p {
+  margin-bottom: 25px !important;
+}
+.processing-progress {
+  width: 100%;
+  height: 9px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(25, 27, 21, .16);
+}
+.processing-progress span {
+  display: block;
+  width: 38%;
+  height: 100%;
+  border-radius: inherit;
+  background: #191b15;
+  animation: meetsense-progress 1.35s ease-in-out infinite;
+}
+@keyframes meetsense-progress {
+  0% { transform: translateX(-110%); }
+  50% { transform: translateX(90%); }
+  100% { transform: translateX(270%); }
+}
+
+/* Flash notifications: same large 640 x 280 card, never a tiny toast. */
+.flash-stack.toast-stack,
+.public-flashes {
+  position: fixed !important;
+  inset: 0 !important;
+  z-index: 90000 !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 24px !important;
+  background: rgba(9, 10, 8, .48) !important;
+  backdrop-filter: none !important;
+  pointer-events: auto !important;
+}
+.flash-stack.toast-stack .flash,
+.public-flashes .flash {
+  box-sizing: border-box !important;
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 42px minmax(0, 1fr) !important;
+  align-content: start !important;
+  align-items: start !important;
+  column-gap: 15px !important;
+  width: min(640px, calc(100vw - 40px)) !important;
+  max-width: 640px !important;
+  min-height: 280px !important;
+  margin: auto !important;
+  padding: 34px 58px 30px 36px !important;
+  border-radius: 20px !important;
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border: 1px solid #d4df35 !important;
+  border-left: 1px solid #d4df35 !important;
+  box-shadow: 5px 7px 0 rgba(0, 0, 0, .95) !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  text-align: left !important;
+  pointer-events: auto !important;
+  animation: toast-center-in .22s ease both !important;
+}
+.flash-stack.toast-stack .flash.success,
+.flash-stack.toast-stack .flash.error,
+.flash-stack.toast-stack .flash.warning,
+.public-flashes .flash.success,
+.public-flashes .flash.error,
+.public-flashes .flash.warning {
+  background: #e5ed57 !important;
+  color: #191b15 !important;
+  border-color: #d4df35 !important;
+  border-left-color: #d4df35 !important;
+}
+.flash-emoji {
+  display: grid !important;
+  place-items: center !important;
+  width: 42px !important;
+  height: 42px !important;
+  border-radius: 50% !important;
+  background: #191b15 !important;
+  color: #e5ed57 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+}
+.flash-content {
+  min-width: 0;
+  padding-top: 2px;
+}
+.flash-content h2 {
+  margin: 0 !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: clamp(22px, 2vw, 26px) !important;
+  line-height: 1.3 !important;
+  font-weight: 800 !important;
+}
+.flash-content p {
+  margin: 28px 0 0 !important;
+  color: #191b15 !important;
+  font-family: Manrope, Arial, sans-serif !important;
+  font-size: clamp(16px, 1.35vw, 18px) !important;
+  line-height: 1.7 !important;
+  font-weight: 500 !important;
+  overflow-wrap: anywhere;
+}
+.flash-stack.toast-stack .flash-close,
+.public-flashes .flash-close {
+  position: absolute !important;
+  top: 20px !important;
+  right: 22px !important;
+  display: grid !important;
+  place-items: center !important;
+  width: 34px !important;
+  height: 34px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 50% !important;
+  background: #191b15 !important;
+  color: #e5ed57 !important;
+  font-size: 22px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+}
+@media (max-width: 640px) {
+  .confirm-modal,
+  .processing-modal {
+    width: calc(100vw - 32px) !important;
+    min-height: 250px !important;
+    padding: 26px 24px 24px !important;
+    border-radius: 17px !important;
+  }
+  .confirm-modal h2,
+  .processing-modal h2,
+  .flash-content h2 {
+    font-size: 21px !important;
+  }
+  .confirm-modal p,
+  .processing-modal p,
+  .flash-content p {
+    font-size: 15px !important;
+  }
+  .flash-stack.toast-stack .flash,
+  .public-flashes .flash {
+    grid-template-columns: 36px minmax(0, 1fr) !important;
+    width: calc(100vw - 32px) !important;
+    min-height: 250px !important;
+    padding: 26px 48px 24px 24px !important;
+    border-radius: 17px !important;
+  }
+  .flash-emoji {
+    width: 36px !important;
+    height: 36px !important;
+    font-size: 19px !important;
+  }
+}
