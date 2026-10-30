@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block title %}{{ code }} — MeetSense{% endblock %}{% block content %}<div class="empty-state error-state"><span class="empty-icon">↗</span><h1>{{ code }}</h1><strong>{{ message }}</strong><p>Return to your workspace and try again.</p><a class="button button-orange" href="{{ url_for('index') }}">Back to dashboard</a></div>{% endblock %}

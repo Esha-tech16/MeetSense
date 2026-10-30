@@ -1,0 +1,5 @@
+# Local audio transcription (Whisper) + hosted cloud summarization (Groq).
+# PyAV 19 removed an argument used by some faster-whisper releases; keep PyAV below 19.
+faster-whisper>=1.1,<2.0
+av>=11,<19
+groq>=0.15,<2.0

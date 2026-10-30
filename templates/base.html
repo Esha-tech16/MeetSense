@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}MeetSense{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <script defer src="{{ url_for('static', filename='js/app.js') }}"></script>
+</head>
+<body>
+{% if current_user.is_authenticated %}
+<div class="app-shell">
+  <aside class="sidebar" id="sidebar">
+    <a class="brand" href="{{ url_for('index') }}"><span class="brand-mark">M</span><span>meet<span class="brand-light">sense</span></span></a>
+    <div class="side-label">WORKSPACE</div>
+    <nav class="nav">
+      <a class="{% if request.endpoint == 'index' %}active{% endif %}" href="{{ url_for('index') }}"><span>◫</span> Dashboard</a>
+      <a class="{% if request.endpoint in ['meetings_page','new_meeting','meeting_detail'] %}active{% endif %}" href="{{ url_for('meetings_page') }}"><span>▤</span> Meetings</a>
+      <a class="{% if request.endpoint in ['tasks_page','new_task'] %}active{% endif %}" href="{{ url_for('tasks_page') }}"><span>☑</span> Tasks</a>
+      <a class="{% if request.endpoint in ['teams_page'] %}active{% endif %}" href="{{ url_for('teams_page') }}"><span>♧</span> Teams</a>
+    </nav>
+    <div class="side-label team-label">YOUR TEAMS</div>
+    <div class="team-nav">{% for team in nav_teams %}<a href="{{ url_for('teams_page') }}"><span class="team-dot">{{ team.name[:1]|upper }}</span>{{ team.name }}</a>{% else %}<p class="muted small">No teams yet</p>{% endfor %}</div>
+    <div class="sidebar-bottom"><div class="help-card"><span class="help-icon">✦</span><strong>Make every meeting count.</strong><p>Turn conversations into clear next steps.</p></div><div class="profile"><span class="avatar">{{ current_user.name[:1]|upper }}</span><div class="profile-info"><strong>{{ current_user.name }}</strong><span>{{ current_user.email }}</span></div><form action="{{ url_for('logout') }}" method="post"><button class="icon-button" title="Log out" aria-label="Log out">↗</button></form></div></div>
+  </aside>
+  <main class="main-area"><header class="topbar"><button class="mobile-menu" id="menuToggle" aria-label="Toggle navigation">☰</button><div class="breadcrumb">Workspace <span>/</span> {% block breadcrumb %}Dashboard{% endblock %}</div><div class="top-actions"><span class="status-pill"><i></i> Local workspace</span><span class="avatar small-avatar">{{ current_user.name[:1]|upper }}</span></div></header>
+    <section class="page-content">
+      {% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="flash-stack">{% for category, message in messages %}<div class="flash {{ category }}">{{ message }}<button class="flash-close" aria-label="Dismiss">×</button></div>{% endfor %}</div>{% endif %}{% endwith %}
+      {% block content %}{% endblock %}
+    </section>
+    <footer class="footer">MeetSense <span>·</span> Meeting intelligence, made actionable.</footer>
+  </main>
+</div>
+{% else %}
+<div class="public-shell">{% with messages = get_flashed_messages(with_categories=true) %}{% if messages %}<div class="public-flashes">{% for category,message in messages %}<div class="flash {{ category }}">{{ message }}</div>{% endfor %}</div>{% endif %}{% endwith %}{% block public_content %}{% endblock %}</div>
+{% endif %}
+</body></html>
